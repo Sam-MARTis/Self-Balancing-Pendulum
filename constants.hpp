@@ -1,0 +1,24 @@
+#pragma once
+
+#define SCREEN_WIDTH 800
+#define SCREEN_HEIGHT 600
+#define ARENA_WIDTH 10.0f
+#define ARENA_HEIGHT 10.0f
+#define CART_MASS 5.0f
+#define CART_WIDTH 0.5f
+#define CART_MAX_SPEED 5.0f
+#define CART_MAX_ACCELERATION 20.0f
+#define PENDULUM_LENGTH 1.0f
+#define PENDULUM_MASS 0.1f
+
+#define SWING_FRICTION_CONSTANT 0.1f
+#define LATERAL_FRICTION_CONSTANT 2.0f
+
+
+#define FORCE_CONSTANT 40.0f
+
+
+
+#define GRAVITY 9.81f
+#define PI 3.14159265358979323846f
+#define EPSILON 1e-6f
