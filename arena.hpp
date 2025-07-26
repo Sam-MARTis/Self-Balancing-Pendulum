@@ -6,11 +6,15 @@
 #include "cart.hpp"
 
 
+
 struct State{
     float cpos;
     float cvel;
     float pangle;
     float pomega;
+};
+struct Action{
+    float force;
 };
 
 struct Arena
