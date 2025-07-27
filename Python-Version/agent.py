@@ -1,4 +1,6 @@
 
+
+
 class Neuron:
     def __init__(self, id=0, value=0.0, activation_function=lambda x: x):
         self.id = id
@@ -29,7 +31,39 @@ class Brain:
 
     def mutate(self, mutation_rate, mutation_strength):
         pass
+    
+    def save_brain(self, filename):
+        pass
 
 
-
+class Generation:
+    def __init__(self, brains_count=1, input_nodes = 4, outut_nodes = 1):
+        self.brains = []
+        for i in range(brains_count):
+            neurons = [Neuron(id=j) for j in range(input_nodes + outut_nodes)]
+            genes = [Gene(from_node_id=j, to_node_id=(j + 1) % (input_nodes + outut_nodes), weight=1.0, bias=0.0) for j in range(input_nodes)]
+            self.brains.append(Brain(id=i, neurons=neurons, genes=genes))
+            
+    def evaluate_agents(self, fitnessfunction):
+        pass
+    
+    
+    
+    def create_next_generation(self):
+        # Sort agents based on performance and generate selection probabiltiy
+        
+        #Take top 20% as is
+        
+        #Sample the remaining 80% of the new generation from the current generation.
+        
+        #Peform crossover and mutation on the 80% to create new agents.
+        
+        
+        #Return genertion
+        
+        pass
+    
+    def save_generation(self, filename):
+        pass
+    
 
