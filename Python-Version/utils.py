@@ -1,3 +1,4 @@
+import math
 
 class vec2:
     def __init__(self, x, y):
@@ -15,6 +16,29 @@ class vec2:
 
     def __truediv__(self, scalar):
         return vec2(self.x / scalar, self.y / scalar)
+    
+class Helpers:
+    @staticmethod
+    def radians(degrees):
+        return degrees * (math.pi / 180.0)
+
+    @staticmethod
+    def degrees(radians):
+        return radians * (180.0 / math.pi)
+    @staticmethod
+    def clamp(value, min_value, max_value):
+        return max(min_value, min(value, max_value))
+    @staticmethod
+    def lerp(start, end, t):
+        return start + (end - start) * t
+    @staticmethod
+    def randint(min_value, max_value):
+        return int(min_value + (max_value - min_value) * math.random())
+    @staticmethod
+    def rand(min_value, max_value):
+        return min_value + (max_value - min_value) * math.random()
+    
+    
 # HEIGHT, WIDTH = 600, 800
 # ARENA_WIDTH = 3
 # CART_WIDTH = 0.3

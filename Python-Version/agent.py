@@ -1,4 +1,4 @@
-
+from utils import Helpers
 
 
 class Neuron:
@@ -29,7 +29,11 @@ class Brain:
     def crossover(self, other):
         pass
 
-    def mutate(self, mutation_rate, mutation_strength):
+    def mutate(self, mutation_rate, mutation_strength_weight=0.1, mutation_strength_bias=0.1):
+        for gene in self.genes:
+            if Helpers.rand(0, 1) < mutation_rate:
+                gene.weight += Helpers.rand(-mutation_strength_weight, mutation_strength_weight)
+                gene.bias += Helpers.rand(-mutation_strength_bias, mutation_strength_bias)
         pass
     
     def save_brain(self, filename):
