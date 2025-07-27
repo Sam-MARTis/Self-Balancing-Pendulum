@@ -87,6 +87,7 @@ class Generation:
         pass
     
     def save_generation(self, filename):
-        pass
+        generation_file = open(filename, 'ab')
+        pickle.dump(self, generation_file)
     
 
