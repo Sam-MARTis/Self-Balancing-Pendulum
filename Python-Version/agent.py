@@ -47,28 +47,28 @@ class Brain:
         gene.weight += Helpers.rand(-mutation_strength_weight, mutation_strength_weight)
         gene.bias += Helpers.rand(-mutation_strength_bias, mutation_strength_bias)
         
-        
+    def topologically_order_neurons(self):
+        #Rearrange the nodes based on order of firing
+        pass
 
-    def mutate(self, mutation_strength_weight=0.1, mutation_strength_bias=0.1, gene_mutation_rate=0.2, gene_addition_rate=0.2, node_addition_rate=0.1):
-        donothing_rate = 1 - (gene_mutation_rate + gene_addition_rate + node_addition_rate)
+    def mutate(self, mutation_strength_weight=0.1, mutation_strength_bias=0.1, gene_mutation_rate=0.2, gene_addition_rate=0.2, neuron_addition_rate=0.1):
+        donothing_rate = 1 - (gene_mutation_rate + gene_addition_rate + neuron_addition_rate)
         if(donothing_rate < 0):
             raise ValueError("Mutation rates exceed 1.0")
-        for gene in self.genes:
-            if Helpers.rand(0, 1) < donothing_rate:
-                continue
-            if Helpers.rand(0, 1) < gene_mutation_rate :
-                self.modify_gene(self.genes.index(gene), mutation_strength_weight, mutation_strength_bias)
-            elif Helpers.rand(0, 1) < gene_addition_rate:
-                new_gene = Gene(from_node_id=Helpers.randint(0, len(self.neurons)-1), to_node_id=Helpers.randint(0, len(self.neurons)-1), weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
-                self.genes.append(new_gene)
-            elif Helpers.rand(0, 1) < node_addition_rate:
-                new_neuron = Neuron(id=len(self.neurons), value=0.0, activation_function=lambda x: x)
-                self.insert_neuron(new_neuron, Helpers.randint(0, len(self.neurons)))
-                new_gene = Gene(from_node_id=Helpers.randint(0, len(self.neurons)-1), to_node_id=new_neuron.id, weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
-                self.genes.append(new_gene)
-                
-            
-        pass
+        
+        if Helpers.rand(0, 1) < donothing_rate:
+            return
+        if Helpers.rand(0, 1) < gene_mutation_rate :
+            self.modify_gene(Helpers.randint(0, len(self.genes)-1), mutation_strength_weight, mutation_strength_bias)
+        elif Helpers.rand(0, 1) < gene_addition_rate:
+            new_gene = Gene(from_node_id=Helpers.randint(0, len(self.neurons)-1), to_node_id=Helpers.randint(0, len(self.neurons)-1), weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
+            self.genes.append(new_gene)
+        elif Helpers.rand(0, 1) < neuron_addition_rate:
+            new_neuron = Neuron(id=len(self.neurons), value=0.0, activation_function=lambda x: x)
+            self.insert_neuron(new_neuron, Helpers.randint(0, len(self.neurons)))
+            new_gene = Gene(from_node_id=Helpers.randint(0, len(self.neurons)-1), to_node_id=new_neuron.id, weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
+            self.genes.append(new_gene)
+        self.topologically_order_neurons()
     
     def save_brain(self, filename):
         brain_file = open(filename, 'ab')
