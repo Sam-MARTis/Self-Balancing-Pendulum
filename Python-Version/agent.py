@@ -1,5 +1,7 @@
 from utils import Helpers
-from typing import List
+import pickle
+
+
 class Neuron:
     def __init__(self, id=0, value=0.0, activation_function=lambda x: x):
         self.id = id
@@ -13,11 +15,11 @@ class Gene:
         self.bias = bias
         
 class Brain:
-    def __init__(self, id:int=0, neurons:List[Neuron]=None, genes:List[Gene]=None):
+    def __init__(self, id:int=0, neurons=None, genes=None):
         if neurons is None:
-            neurons:List[Neuron] = []
+            neurons = []
         if genes is None:
-            genes:List[Gene] = []
+            genes = []
         self.id = id
         self.neurons = neurons
         self.genes = genes
@@ -51,16 +53,18 @@ class Brain:
                 gene.bias += Helpers.rand(-mutation_strength_bias, mutation_strength_bias)
         pass
     
-    def save_brain(self, filename:str):
-        pass
+    def save_brain(self, filename):
+        brain_file = open(filename, 'ab')
+        pickle.dump(self, brain_file)
+
 
 
 class Generation:
     def __init__(self, brains_count=1, input_nodes = 4, outut_nodes = 1):
-        self.brains:List[Brain] = []
+        self.brains = []
         for i in range(brains_count):
-            neurons:List[Neuron] = [Neuron(id=j) for j in range(input_nodes + outut_nodes)]
-            genes:List[Neuron] = [Gene(from_node_id=j, to_node_id=(j + 1) % (input_nodes + outut_nodes), weight=1.0, bias=0.0) for j in range(input_nodes)]
+            neurons = [Neuron(id=j) for j in range(input_nodes + outut_nodes)]
+            genes = [Gene(from_node_id=j, to_node_id=(j + 1) % (input_nodes + outut_nodes), weight=1.0, bias=0.0) for j in range(input_nodes)]
             self.brains.append(Brain(id=i, neurons=neurons, genes=genes))
             
     def evaluate_agents(self, fitnessfunction):
