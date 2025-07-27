@@ -40,10 +40,13 @@ class Brain:
             raise IndexError("Position out of bounds")
         self.neurons.insert(position, neuron)
     
-    def insert_gene(self, gene:Gene, position:int):
-        if position < 0 or position > len(self.genes):
-            raise IndexError("Position out of bounds")
-        self.genes.insert(position, gene)
+    def modify_gene(self, genePosition:int, mutation_strength_weight=0.1, mutation_strength_bias=0.1):
+        if genePosition < 0 or genePosition >= len(self.genes):
+            raise IndexError("Gene position out of bounds")
+        gene = self.genes[genePosition]
+        gene.weight += Helpers.rand(-mutation_strength_weight, mutation_strength_weight)
+        gene.bias += Helpers.rand(-mutation_strength_bias, mutation_strength_bias)
+        
         
 
     def mutate(self, mutation_rate, mutation_strength_weight=0.1, mutation_strength_bias=0.1):
