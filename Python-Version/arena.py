@@ -70,3 +70,30 @@ class Pendulum:
 
         pygame.draw.line(self.screen, (255, 255, 255), (pivot_x*self.environment.magnification, pivot_y*self.environment.magnification), (pendulum_x*self.environment.magnification, pendulum_y*self.environment.magnification), math.ceil(self.environment.PENDULUM_THICKNESS*self.environment.magnification))
         pygame.draw.circle(self.screen, (255, 0, 0), (int(pendulum_x*self.environment.magnification), int(pendulum_y*self.environment.magnification)), math.ceil(self.environment.PENDULUM_BOB_RADIUS*self.environment.magnification))
+
+
+class Arena:
+    def __init__(self, system: system):
+        self.system = system
+        self.screen - None
+        self.cart = Cart(self.screen, self.system.CART_MASS, self.system.CART_WIDTH, self.system.CART_HEIGHT, self.system.cart_x, self.system)
+        self.pendulum = Pendulum(self.screen, self.cart, self.system.PENDULUM_LENGTH, self.system.PENDULUM_MASS, self.system.pendulum_angle, self.system)
+        self.cart.pendulum = self.pendulum
+        self.screen_is_bound = False
+        
+    def set_screen(self, screen):
+        self.screen = screen
+        self.cart.screen = screen
+        self.pendulum.screen = screen
+        self.system.magnification = self.system.WIDTH / self.system.ARENA_WIDTH
+        self.system.cart_y = self.system.HEIGHT / (2 * self.system.magnification)
+        
+    def step(self, dt, action):
+        self.cart.accelerate(action.force)
+        self.cart.step(dt)
+    
+    def draw(self):
+        if self.screen_is_bound:
+            self.screen.fill((0, 0, 0))  
+            self.cart.draw()
+            self.pendulum.draw()

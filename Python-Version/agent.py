@@ -27,6 +27,7 @@ class Brain:
         self.genes:List[Gene] = []
         self.input_nodes_count = input_nodes
         self.output_nodes_count = output_nodes
+        self.score = 0.0
         """
         There neurons are arranged in a 1D array. 
         Each neuron can only have inputs from neurons with a lower index.
@@ -39,7 +40,7 @@ class Brain:
             neuron = Neuron(id=id, value=0.0, activation_function=lambda x: x)
             id += 1
             self.neurons.append(neuron)
-        
+            
         
         for i in range(len(hidden_layers)):
             for j in range(hidden_layers[i]):
@@ -194,14 +195,16 @@ class Brain:
 
 
 class Generation:
+    
     def __init__(self, brains_count=1, input_nodes = 4, outut_nodes = 1):
-        self.brains = []
+        self.brains:List[Brain] = []
         for i in range(brains_count):
-            neurons = [Neuron(id=j) for j in range(input_nodes + outut_nodes)]
-            genes = [Gene(from_node_id=j, to_node_id=(j + 1) % (input_nodes + outut_nodes), weight=1.0, bias=0.0) for j in range(input_nodes)]
-            self.brains.append(Brain(id=i, neurons=neurons, genes=genes))
-            
+            brain = Brain(id=i, input_nodes=input_nodes, output_nodes=outut_nodes, hidden_layers=[2])
+            self.brains.append(brain)
+        
+        
     def evaluate_agents(self, fitnessfunction):
+        
         pass
     
     
@@ -214,10 +217,10 @@ class Generation:
         #Sample the remaining 80% of the new generation from the current generation.
         
         #Peform crossover and mutation on the 80% to create new agents.
-        
-        
-        #Return genertion
-        
+
+
+        #Return generation
+
         pass
     
     def save_generation(self, filename):
