@@ -2,7 +2,7 @@ from utils import Helpers, Action, State
 import pickle
 from typing import List, Callable
 
-def relu (x):
+def relu (x:float) -> float:
     return max(0, x)
 
 activation_function = relu
@@ -20,13 +20,11 @@ class Gene:
         self.bias = bias
         
 class Brain:
-    def __init__(self, id:int=0, input_nodes:int = 4, output_nodes:int = 1, neurons=None, genes=None):
-        if neurons is None:
-            neurons:List[Neuron] = []
-        if genes is None:
-            genes:List[Gene] = []
+    def __init__(self, id:int=0, input_nodes:int = 4, output_nodes:int = 1, hidden_layers:List[int] = [2], weights_range = 4, bias_range = 4):
+
         self.id = id
-        self.neurons:List[Neuron] = neurons
+        self.neurons:List[Neuron] = []
+        self.genes:List[Gene] = []
         self.input_nodes_count = input_nodes
         self.output_nodes_count = output_nodes
         """
@@ -36,9 +34,31 @@ class Brain:
         This means that the neurons are topologically ordered.
         The first neurons are the input neurons, and the last one is the output neurons.
         """
+        id = 0
+        for i in range(self.input_nodes_count):
+            neuron = Neuron(id=id, value=0.0, activation_function=lambda x: x)
+            id += 1
+            self.neurons.append(neuron)
         
         
-        self.genes:List[Gene] = genes
+        for i in range(len(hidden_layers)):
+            for j in range(hidden_layers[i]):
+                neuron = Neuron(id=id, value=0.0, activation_function=activation_function)
+                id += 1
+                self.neurons.append(neuron)
+
+        for i in range(self.output_nodes_count):
+            neuron = Neuron(id=id, value=0.0, activation_function=lambda x: x)
+            id += 1
+            self.neurons.append(neuron)
+            
+            
+            
+        #Insert a bunch of genes now
+    
+    # def initialize_random_brain(self, hidden_layers:List[int] = [4]):
+        
+        
     def reset_neurons(self):
         for neuron in self.neurons:
             neuron.value = 0.0
@@ -62,6 +82,7 @@ class Brain:
         
         result = Action(force=self.neurons[-1].value)
         return result
+    
                 
         
             
@@ -98,7 +119,9 @@ class Brain:
         gene = self.genes[genePosition]
         gene.weight += Helpers.rand(-mutation_strength_weight, mutation_strength_weight)
         gene.bias += Helpers.rand(-mutation_strength_bias, mutation_strength_bias)
-        
+    
+    def insert_gene(self, from_node:Neuron, to_node:Neuron, weight =0.0, bias=0.0):
+        pass
     def mutate(self, mutation_strength_weight=1.9, mutation_strength_bias=1.5, 
             gene_mutation_rate=0.2, gene_addition_rate=0.2, neuron_addition_rate=0.1):
         
@@ -143,6 +166,8 @@ class Brain:
         """Load a brain from file"""
         with open(filename, 'rb') as brain_file:
             return pickle.load(brain_file)
+        
+
 
 
 
