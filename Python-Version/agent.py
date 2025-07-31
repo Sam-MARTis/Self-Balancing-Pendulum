@@ -120,8 +120,29 @@ class Brain:
         gene.weight += Helpers.rand(-mutation_strength_weight, mutation_strength_weight)
         gene.bias += Helpers.rand(-mutation_strength_bias, mutation_strength_bias)
     
-    def insert_gene(self, from_node:Neuron, to_node:Neuron, weight =0.0, bias=0.0):
-        pass
+    def insert_random_gene(self, weight = 0.0, bias = 0.0):
+        for i in range(20):
+            random_node1 = self.neurons[Helpers.randint(0, len(self.neurons) - 1)]
+            random_node2 = self.neurons[Helpers.randint(0, len(self.neurons))]
+            for gene in random_node1.outgoing_genes:
+                if gene.to_node == random_node2:
+                    break
+            else:
+                new_gene = Gene(from_node=random_node1, to_node=random_node2, weight=weight, bias=bias)
+                random_node1.outgoing_genes.append(new_gene)
+                self.genes.append(new_gene)
+                return True
+        else:
+            raise ValueError("Could not insert random gene after 20 attempts")
+            
+        
+    # def insert_gene(self, from_node:Neuron, to_node:Neuron, weight =0.0, bias=0.0):
+    #     for genes in from_node.outgoing_genes:
+    #         if genes.to_node == to_node:
+    #             return False
+    #     new_gene = Gene(from_node=from_node, to_node=to_node, weight=weight, bias=bias)
+        
+    #     pass
     def mutate(self, mutation_strength_weight=1.9, mutation_strength_bias=1.5, 
             gene_mutation_rate=0.2, gene_addition_rate=0.2, neuron_addition_rate=0.1):
         
