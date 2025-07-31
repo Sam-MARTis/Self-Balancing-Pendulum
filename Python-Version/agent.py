@@ -23,15 +23,14 @@ class Brain:
         self.id = id
         self.neurons = neurons
         self.genes = genes
+        
     def reset_neurons(self):
         for neuron in self.neurons:
             neuron.value = 0.0
     
-    
     def perform_computation(self, state):
         pass
     
-
     def crossover(self, other):
         pass
     
