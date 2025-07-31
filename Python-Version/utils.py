@@ -44,6 +44,18 @@ class Helpers:
         """
         return min_value + (max_value - min_value) * math.random()
     
+class Action:
+    def __init__(self, force):
+        self.force = force
+
+class State:
+    def __init__(self, cart_x, cart_vx, pendulum_angle, pendulum_angular_velocity):
+        self.cart_x = cart_x
+        self.cart_vx = cart_vx
+        self.pendulum_angle = pendulum_angle
+        self.pendulum_angular_velocity = pendulum_angular_velocity
+        self.properties = [cart_x, cart_vx, pendulum_angle, pendulum_angular_velocity]
+    
     
 # HEIGHT, WIDTH = 600, 800
 # ARENA_WIDTH = 3

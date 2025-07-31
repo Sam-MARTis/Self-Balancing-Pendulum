@@ -1,13 +1,16 @@
-from utils import Helpers
+from utils import Helpers, Action, State
 import pickle
-from typing import List
+from typing import List, Callable
 
+def relu (x):
+    return max(0, x)
 
+activation_function = relu
 class Neuron:
     def __init__(self, id=0, value=0.0, activation_function=lambda x: x):
         self.id = id
         self.value = value
-        self.activation_function = activation_function
+        self.activation_function:Callable = activation_function
         self.outgoing_genes:List['Gene'] = [] 
 class Gene:
     def __init__(self, from_node:Neuron, to_node:Neuron, weight=0.0, bias=0.0):
@@ -41,8 +44,28 @@ class Brain:
             neuron.value = 0.0
     
     
-    def perform_computation(self, state):
-        pass
+    def perform_computation(self, state:State)-> Action:
+        for i in range(len(self.neurons)):
+            if i < self.input_nodes_count:
+                
+                self.neurons[i].value = state.properties[i]
+            else:
+                self.neurons[i].value = 0.0
+        
+        for i in range(self.input_nodes_count):
+            self.neurons[i].value = state.properties[i]
+            
+        for neuron in self.neurons:
+            for gene in neuron.outgoing_genes:
+                gene.to_node.value += neuron.activation_function(neuron.value * gene.weight + gene.bias)
+                
+        
+        result = Action(force=self.neurons[-1].value)
+        return result
+                
+        
+            
+        
     
 
     def crossover(self, other):
@@ -96,13 +119,18 @@ class Brain:
             from_node.outgoing_genes.append(new_gene)
             self.genes.append(new_gene)
         elif Helpers.rand(0, 1) < neuron_addition_rate:
-            new_neuron = Neuron(id=len(self.neurons), value=0.0, activation_function=lambda x: x)
+            new_neuron = Neuron(id=len(self.neurons), value=0.0, activation_function=activation_function)
             neuron_index =  Helpers.randint(self.input_nodes_count, len(self.neurons) - self.output_nodes_count) # Check this logic. Should there be a -1 here?
             self.insert_neuron(new_neuron, neuron_index, insert_genes=True) 
     
     def save_brain(self, filename):
-        brain_file = open(filename, 'ab')
+        brain_file = open(filename, 'wb')
         pickle.dump(self, brain_file)
+        
+    @staticmethod
+    def load_brain(filename):
+        with open(filename, 'rb') as brain_file:
+            return pickle.load(brain_file)
 
 
 
