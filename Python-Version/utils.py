@@ -33,9 +33,15 @@ class Helpers:
         return start + (end - start) * t
     @staticmethod
     def randint(min_value, max_value):
+        """
+        Returns a random integer between min_value and max_value, inclusive.
+        """
         return int(min_value + (max_value - min_value) * math.random())
     @staticmethod
     def rand(min_value, max_value):
+        """
+        Returns a random float between min_value and max_value.
+        """
         return min_value + (max_value - min_value) * math.random()
     
     

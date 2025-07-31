@@ -1,5 +1,6 @@
 from utils import Helpers
 import pickle
+from typing import List
 
 
 class Neuron:
@@ -7,22 +8,34 @@ class Neuron:
         self.id = id
         self.value = value
         self.activation_function = activation_function
+        self.outgoing_genes:List['Gene'] = [] 
 class Gene:
-    def __init__(self, from_node_id=0, to_node_id=0, weight=0.0, bias=0.0):
-        self.from_node_id = from_node_id
-        self.to_node_id = to_node_id
+    def __init__(self, from_node:Neuron, to_node:Neuron, weight=0.0, bias=0.0):
+        self.from_node = from_node
+        self.to_node = to_node
         self.weight = weight
         self.bias = bias
         
 class Brain:
-    def __init__(self, id:int=0, neurons=None, genes=None):
+    def __init__(self, id:int=0, input_nodes:int = 4, output_nodes:int = 1, neurons=None, genes=None):
         if neurons is None:
-            neurons = []
+            neurons:List[Neuron] = []
         if genes is None:
-            genes = []
+            genes:List[Gene] = []
         self.id = id
-        self.neurons = neurons
-        self.genes = genes
+        self.neurons:List[Neuron] = neurons
+        self.input_nodes_count = input_nodes
+        self.output_nodes_count = output_nodes
+        """
+        There neurons are arranged in a 1D array. 
+        Each neuron can only have inputs from neurons with a lower index.
+        It can only output to neurons with a higher index.
+        This means that the neurons are topologically ordered.
+        The first neurons are the input neurons, and the last one is the output neurons.
+        """
+        
+        
+        self.genes:List[Gene] = genes
     def reset_neurons(self):
         for neuron in self.neurons:
             neuron.value = 0.0
@@ -35,23 +48,35 @@ class Brain:
     def crossover(self, other):
         pass
     
-    def insert_neuron(self, neuron:Neuron, position:int):
-        if position < 0 or position > len(self.neurons):
+    def insert_neuron(self, neuron:Neuron, position:int, insert_genes:bool=True):
+        if position < self.input_nodes_count or position > len(self.neurons) - self.output_nodes_count:
             raise IndexError("Position out of bounds")
+        
+        if insert_genes:
+            from_index = Helpers.randint(0, position - 1)
+            to_index = Helpers.randint(position + 1, len(self.neurons)-1)
+            neuron_from = self.neurons[from_index]
+            neuron_to = self.neurons[to_index]
+            
+            
+            
+            new_gene = Gene(from_node=self.neurons[from_index], to_node=neuron, weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
+            neuron_from.outgoing_genes.append(new_gene)
+            new_gene2 = Gene(from_node=neuron, to_node=neuron_to, weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
+            neuron.outgoing_genes.append(new_gene2)
+            self.genes.append(new_gene)
+            self.genes.append(new_gene2)
+        
         self.neurons.insert(position, neuron)
     
-    def modify_gene(self, genePosition:int, mutation_strength_weight=0.1, mutation_strength_bias=0.1):
+    def modify_gene(self, genePosition:int, mutation_strength_weight=1.0, mutation_strength_bias=1.5):
         if genePosition < 0 or genePosition >= len(self.genes):
             raise IndexError("Gene position out of bounds")
         gene = self.genes[genePosition]
         gene.weight += Helpers.rand(-mutation_strength_weight, mutation_strength_weight)
         gene.bias += Helpers.rand(-mutation_strength_bias, mutation_strength_bias)
         
-    def topologically_order_neurons(self):
-        #Rearrange the nodes based on order of firing
-        pass
-
-    def mutate(self, mutation_strength_weight=0.1, mutation_strength_bias=0.1, gene_mutation_rate=0.2, gene_addition_rate=0.2, neuron_addition_rate=0.1):
+    def mutate(self, mutation_strength_weight=1.9, mutation_strength_bias=1.5, gene_mutation_rate=0.2, gene_addition_rate=0.2, neuron_addition_rate=0.1):
         donothing_rate = 1 - (gene_mutation_rate + gene_addition_rate + neuron_addition_rate)
         if(donothing_rate < 0):
             raise ValueError("Mutation rates exceed 1.0")
@@ -61,14 +86,19 @@ class Brain:
         if Helpers.rand(0, 1) < gene_mutation_rate :
             self.modify_gene(Helpers.randint(0, len(self.genes)-1), mutation_strength_weight, mutation_strength_bias)
         elif Helpers.rand(0, 1) < gene_addition_rate:
-            new_gene = Gene(from_node_id=Helpers.randint(0, len(self.neurons)-1), to_node_id=Helpers.randint(0, len(self.neurons)-1), weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
+            from_node_index = Helpers.randint(0, len(self.neurons)-2)
+            to_node_index = Helpers.randint(from_node_index + 1, len(self.neurons)-1)
+            
+            from_node = self.neurons[from_node_index]
+            to_node = self.neurons[to_node_index]
+            
+            new_gene = Gene(from_node=from_node, to_node=to_node, weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
+            from_node.outgoing_genes.append(new_gene)
             self.genes.append(new_gene)
         elif Helpers.rand(0, 1) < neuron_addition_rate:
             new_neuron = Neuron(id=len(self.neurons), value=0.0, activation_function=lambda x: x)
-            self.insert_neuron(new_neuron, Helpers.randint(0, len(self.neurons)))
-            new_gene = Gene(from_node_id=Helpers.randint(0, len(self.neurons)-1), to_node_id=new_neuron.id, weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
-            self.genes.append(new_gene)
-        self.topologically_order_neurons()
+            neuron_index =  Helpers.randint(self.input_nodes_count, len(self.neurons) - self.output_nodes_count) # Check this logic. Should there be a -1 here?
+            self.insert_neuron(new_neuron, neuron_index, insert_genes=True) 
     
     def save_brain(self, filename):
         brain_file = open(filename, 'ab')
