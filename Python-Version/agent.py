@@ -24,8 +24,6 @@ class Brain:
 
         self.id = id
 
-        self.neurons = neurons
-        self.genes = genes
 
         self.neurons:List[Neuron] = []
         self.genes:List[Gene] = []
@@ -66,10 +64,7 @@ class Brain:
     def reset_neurons(self):
         for neuron in self.neurons:
             neuron.value = 0.0
-    
 
-    def perform_computation(self, state):
-        pass
     
     def perform_computation(self, state:State)-> Action:
         for i in range(len(self.neurons)):
@@ -83,8 +78,9 @@ class Brain:
             self.neurons[i].value = state.properties[i]
             
         for neuron in self.neurons:
+            value = neuron.activation_function(neuron.value)
             for gene in neuron.outgoing_genes:
-                gene.to_node.value += neuron.activation_function(neuron.value * gene.weight + gene.bias)
+                gene.to_node.value += value * gene.weight + gene.bias
                 
         
         result = Action(force=self.neurons[-1].value)

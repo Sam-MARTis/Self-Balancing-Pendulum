@@ -1,9 +1,12 @@
 import pygame
 import math
 import sys
+import time
+
 from utils import vec2, system, Action, State
 from agent import Brain, Neuron, Gene
 from arena import Cart, Pendulum, Arena
+
 
 
 # Pygame Setup
@@ -116,7 +119,10 @@ if __name__ == "__main__":
             act.force = -CART_BUTTON_FORCE
         elif keys[pygame.K_RIGHT]:
             act.force = CART_BUTTON_FORCE
-        dt = clock.tick(60) / 1000.0
+        # dt = clock.tick(60)
+        
+        dt = 0.01
+        time.sleep(dt)  # Simulate a frame delay
         environment.dt = dt
 
         Arena.step(dt, act)

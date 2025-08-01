@@ -99,7 +99,9 @@ class Arena:
 
     
     def get_state(self):
-        return [*self.cart.getState(), self.pendulum.angle, self.pendulum.angular_velocity]
+        state = State(*self.cart.getState(), self.pendulum.angle, self.pendulum.angular_velocity)
+        # return [*self.cart.getState(), self.pendulum.angle, self.pendulum.angular_velocity]
+        return state
 
     def draw(self):
         if self.screen_is_bound:

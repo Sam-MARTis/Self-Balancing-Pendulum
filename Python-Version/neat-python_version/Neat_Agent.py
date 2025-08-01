@@ -61,7 +61,8 @@ def eval_genomes(genomes, config):
                                       environment.cart_y + pendulum.length * utils.math.sin(pendulum.angle),
                                       pendulum.angular_velocity))[0] * (MAX_FORCE/2)
             
-            dt = clock.tick(60)/1000.0
+            # dt = clock.tick(60)/1000.0
+            dt = 0.01
             environment.dt = dt
             cart.accelerate(out_force)
             cart.step(dt)
@@ -71,6 +72,8 @@ def eval_genomes(genomes, config):
 
             if 0 < utils.math.degrees(pendulum.angle) <= 10 or utils.math.degrees(pendulum.angle) >= 350:
                 genome.fitness += 1
+
+
             end_time = pygame.time.get_ticks()
             elapsed_time = (end_time - start_time) / 1000
 
