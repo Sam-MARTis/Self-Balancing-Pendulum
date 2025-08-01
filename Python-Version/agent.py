@@ -20,15 +20,17 @@ class Gene:
         self.bias = bias
         
 class Brain:
-    def __init__(self, id:int=0, input_nodes:int = 4, output_nodes:int = 1, hidden_layers:List[int] = [2], weights_range = 4, bias_range = 4):
+    def __init__(self, id:int=0, input_nodes_count:int = 4, output_nodes_count:int = 1, hidden_layers:List[int] = [2], weights_range = 4, bias_range = 4):
 
         self.id = id
 
 
         self.neurons:List[Neuron] = []
         self.genes:List[Gene] = []
-        self.input_nodes_count = input_nodes
-        self.output_nodes_count = output_nodes
+        self.input_nodes_count = input_nodes_count
+        self.output_nodes_count = output_nodes_count
+        self.weights_range = weights_range
+        self.bias_range = bias_range
         self.score = 0.0
         """
         There neurons are arranged in a 1D array. 
@@ -58,6 +60,15 @@ class Brain:
             
             
         #Insert a bunch of genes now
+        for i in range(20):
+            weight = Helpers.rand(-weights_range, weights_range)
+            bias = Helpers.rand(-bias_range, bias_range)
+            try:
+                self.insert_random_gene(weight=weight, bias=bias)
+            except ValueError as e:
+                print(f"Error inserting random gene: {e}")
+                break
+            
     
     # def initialize_random_brain(self, hidden_layers:List[int] = [4]):
         
@@ -132,7 +143,7 @@ class Brain:
                 self.genes.append(new_gene)
                 return True
         else:
-            raise ValueError("Could not insert random gene after 20 attempts")
+            raise ValueError("Could not insert random gene after 20 attempts. Network likely full")
             
         
     # def insert_gene(self, from_node:Neuron, to_node:Neuron, weight =0.0, bias=0.0):

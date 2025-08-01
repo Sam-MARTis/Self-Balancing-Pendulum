@@ -6,6 +6,7 @@ import time
 from utils import vec2, system, Action, State
 from agent import Brain, Neuron, Gene
 from arena import Cart, Pendulum, Arena
+from interface import Interface
 
 
 
@@ -97,44 +98,46 @@ if __name__ == "__main__":
     # pendulum = Pendulum(screen, cart, PENDULUM_LENGTH, PENDULUM_MASS, pendulum_angle, environment)
     # cart.pendulum = pendulum
     Arena = Arena(environment)
-    Arena.set_screen(screen)
-    
-    
+    brain = Brain(id=1, input_nodes_count=4, output_nodes_count=1)
+    interface = Interface(arena=Arena, agent=brain, screen=screen, dt=0.01, time_train=100, render=False)
+    # Arena.set_screen(screen)
+
+    interface.evaluate()
 
     # Main loop
-    clock = pygame.time.Clock()
+    # clock = pygame.time.Clock()
     # pendulum.angular_velocity = 0.0
-    while True:
-        screen.fill((0, 0, 0))  
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
+        # while True:
+        #     screen.fill((0, 0, 0))  
+        #     for event in pygame.event.get():
+        #         if event.type == pygame.QUIT:
+        #             pygame.quit()
+        #             sys.exit()
 
-        keys = pygame.key.get_pressed()
-        # force = 0
-        act = Action(0)
-        if keys[pygame.K_LEFT]:
-            # force = -CART_BUTTON_FORCE 
-            act.force = -CART_BUTTON_FORCE
-        elif keys[pygame.K_RIGHT]:
-            act.force = CART_BUTTON_FORCE
-        # dt = clock.tick(60)
-        
-        dt = 0.01
-        time.sleep(dt)  # Simulate a frame delay
-        environment.dt = dt
+        #     keys = pygame.key.get_pressed()
+        #     # force = 0
+        #     act = Action(0)
+        #     if keys[pygame.K_LEFT]:
+        #         # force = -CART_BUTTON_FORCE 
+        #         act.force = -CART_BUTTON_FORCE
+        #     elif keys[pygame.K_RIGHT]:
+        #         act.force = CART_BUTTON_FORCE
+        #     # dt = clock.tick(60)
+            
+        #     dt = 0.01
+        #     time.sleep(dt)  # Simulate a frame delay
+        #     environment.dt = dt
 
-        Arena.step(dt, act)
+        #     Arena.step(dt, act)
 
-        
-        # cart.step(dt)
+            
+        #     # cart.step(dt)
 
-        # screen.fill((255, 255, 255))
-        # cart.draw()
-        # pendulum.draw()
-        # Arena.cart.draw()
-        Arena.draw()
-        
+        #     # screen.fill((255, 255, 255))
+        #     # cart.draw()
+        #     # pendulum.draw()
+        #     # Arena.cart.draw()
+        #     Arena.draw()
+            
 
-        pygame.display.flip()
+        #     pygame.display.flip()

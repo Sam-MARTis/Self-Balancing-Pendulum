@@ -27,19 +27,24 @@ class Interface:
         time_elapsed = 0
         while time_elapsed < self.time_train:
             
+            
             time_elapsed += self.dt
             state = self.arena.get_state()
             action = self.agent.perform_computation(state)
+            print(action.force)
             self.arena.step(self.dt, action)
             if self.render:
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        return
+                        # sys.exit()
                 self.screen.fill((0, 0, 0))
                 self.arena.draw()
                 time.sleep(self.dt)
                 pygame.display.flip()
             if state.pendulum_angle < Helpers.radians(-20) or state.pendulum_angle > Helpers.radians(340):
                 self.agent.score += 1 *self.dt
-                break
             if state.cart_x < -self.arena.system.ARENA_WIDTH / 4 or state.cart_x > 3*self.arena.system.ARENA_WIDTH / 4:
                 self.agent.score -= 0.05 *self.dt
-                break
                 

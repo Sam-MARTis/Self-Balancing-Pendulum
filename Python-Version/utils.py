@@ -1,4 +1,5 @@
 import math
+import random
 
 class vec2:
     def __init__(self, x, y):
@@ -36,14 +37,14 @@ class Helpers:
         """
         Returns a random integer between min_value and max_value, inclusive.
         """
-        return int(min_value + (max_value - min_value) * math.random())
+        return int(min_value + (max_value - min_value) * random.random())
     @staticmethod
     def rand(min_value, max_value):
         """
         Returns a random float between min_value and max_value.
         """
-        return min_value + (max_value - min_value) * math.random()
-    
+        return min_value + (max_value - min_value) * random.random()
+
 class Action:
     def __init__(self, force):
         self.force = force
