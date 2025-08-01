@@ -1,6 +1,7 @@
 import pygame
 import math
 from utils import system, vec2
+from typing import List
 
 class Cart:
     def __init__(self, screen, mass, width, height, cart_x, environment):
@@ -17,7 +18,8 @@ class Cart:
     def accelerate(self, force):
         # Calculate acceleration based on force and gravity
         acceleration = (force/ self.mass)
-        self.accx = max(-self.environment.MAX_ACCELERATION, min(self.environment.MAX_ACCELERATION, acceleration))
+        # self.accx = max(-self.environment.MAX_ACCELERATION, min(self.environment.MAX_ACCELERATION, acceleration))
+        self.accx = acceleration
     
         
     def step(self, dt):
@@ -25,6 +27,7 @@ class Cart:
         vx = self.vx +  (self.accx - (self.environment.LATERAL_FRICTION_CONSTANT * self.vx) )*dt
         self.vx = max(-self.environment.CART_MAX_SPEED, min(self.environment.CART_MAX_SPEED, vx))
         accx = (self.vx - oldvx) / dt
+        accx = max(-self.environment.MAX_ACCELERATION, min(self.environment.MAX_ACCELERATION, accx))    
         pendulum_force = vec2(-self.pendulum.mass * accx, -self.pendulum.mass * self.environment.GRAVITY)
         
         # self.vx -= * dt
@@ -38,13 +41,13 @@ class Cart:
         pygame.draw.rect(self.screen, (0, 0, 255), cart_rect)
     
         
-    def getState(self):
-        return self.x, self.y, self.vx
+    def getState(self) -> List[float]:
+        return [self.x, self.vx]
 
 class Pendulum:
     def __init__(self, screen, cart, length, mass, angle, environment):
         self.screen = screen
-        self.cart = cart
+        self.cart: Cart = cart
         self.length = length
         self.angle = angle
         self.mass = mass
@@ -91,9 +94,13 @@ class Arena:
     def step(self, dt, action):
         self.cart.accelerate(action.force)
         self.cart.step(dt)
+
     
+    def get_state(self):
+        return [*self.cart.getState(), self.pendulum.angle, self.pendulum.angular_velocity]
+
     def draw(self):
         if self.screen_is_bound:
-            self.screen.fill((0, 0, 0))  
             self.cart.draw()
             self.pendulum.draw()
+    
