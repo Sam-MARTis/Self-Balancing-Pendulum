@@ -1,6 +1,6 @@
 import pygame
 import math
-from utils import system, vec2
+from utils import system, vec2, Action, State
 from typing import List
 
 class Cart:
@@ -53,6 +53,7 @@ class Pendulum:
         self.mass = mass
         self.MOI_inv = 1.0 / (mass * length * length)
         self.environment:system = environment
+        self.angular_velocity = 0.0
         
 
     def update(self, dt, force: vec2):
@@ -78,9 +79,10 @@ class Pendulum:
 class Arena:
     def __init__(self, system: system):
         self.system = system
-        self.screen - None
-        self.cart = Cart(self.screen, self.system.CART_MASS, self.system.CART_WIDTH, self.system.CART_HEIGHT, self.system.cart_x, self.system)
-        self.pendulum = Pendulum(self.screen, self.cart, self.system.PENDULUM_LENGTH, self.system.PENDULUM_MASS, self.system.pendulum_angle, self.system)
+        self.screen = None
+        self.cart = Cart(self.screen, self.system.CART_MASS, self.system.CART_WIDTH, self.system.CART_HEIGHT, self.system.ARENA_WIDTH/2, self.system)
+        self.pendulum = Pendulum(self.screen, self.cart, self.system.PENDULUM_LENGTH, self.system.PENDULUM_MASS, math.radians(30), self.system)
+        
         self.cart.pendulum = self.pendulum
         self.screen_is_bound = False
         
@@ -90,8 +92,8 @@ class Arena:
         self.pendulum.screen = screen
         self.system.magnification = self.system.WIDTH / self.system.ARENA_WIDTH
         self.system.cart_y = self.system.HEIGHT / (2 * self.system.magnification)
-        
-    def step(self, dt, action):
+        self.screen_is_bound = True
+    def step(self, dt, action: Action):
         self.cart.accelerate(action.force)
         self.cart.step(dt)
 
@@ -103,4 +105,4 @@ class Arena:
         if self.screen_is_bound:
             self.cart.draw()
             self.pendulum.draw()
-    
+
