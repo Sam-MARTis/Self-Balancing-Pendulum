@@ -23,6 +23,10 @@ class Brain:
     def __init__(self, id:int=0, input_nodes:int = 4, output_nodes:int = 1, hidden_layers:List[int] = [2], weights_range = 4, bias_range = 4):
 
         self.id = id
+
+        self.neurons = neurons
+        self.genes = genes
+
         self.neurons:List[Neuron] = []
         self.genes:List[Gene] = []
         self.input_nodes_count = input_nodes
@@ -59,11 +63,13 @@ class Brain:
     
     # def initialize_random_brain(self, hidden_layers:List[int] = [4]):
         
-        
     def reset_neurons(self):
         for neuron in self.neurons:
             neuron.value = 0.0
     
+
+    def perform_computation(self, state):
+        pass
     
     def perform_computation(self, state:State)-> Action:
         for i in range(len(self.neurons)):
@@ -84,12 +90,8 @@ class Brain:
         result = Action(force=self.neurons[-1].value)
         return result
     
-                
-        
-            
-        
-    
 
+    
     def crossover(self, other):
         pass
     
