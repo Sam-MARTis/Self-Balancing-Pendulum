@@ -99,7 +99,7 @@ if __name__ == "__main__":
     # cart.pendulum = pendulum
     Arena = Arena(environment)
     brain = Brain(id=1, input_nodes_count=4, output_nodes_count=1)
-    interface = Interface(arena=Arena, agent=brain, screen=screen, dt=0.01, time_train=100, render=False)
+    interface = Interface(arena=Arena, agent=brain, screen=screen, dt=0.01, time_train=100, render=True)
     # Arena.set_screen(screen)
 
     interface.evaluate()

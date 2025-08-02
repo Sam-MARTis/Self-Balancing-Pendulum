@@ -107,4 +107,12 @@ class Arena:
         if self.screen_is_bound:
             self.cart.draw()
             self.pendulum.draw()
+            
+    def reset(self):
+        self.cart.x = self.system.ARENA_WIDTH / 2
+        self.cart.vx = 0.0
+        self.cart.accx = 0.0
+        self.pendulum.angle = math.radians(30)
+        self.pendulum.angular_velocity = 0.0
+        self.pendulum.update(0, vec2(0, 0))
 

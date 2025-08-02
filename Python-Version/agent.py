@@ -71,7 +71,28 @@ class Brain:
             
     
     # def initialize_random_brain(self, hidden_layers:List[int] = [4]):
+    def copy(self, keep_score=False):
+        """
+        Create a copy of the brain.
+        """
+        new_brain = Brain(id=self.id, input_nodes_count=self.input_nodes_count, output_nodes_count=self.output_nodes_count)
         
+        
+        
+        #Recheck this logic again later
+        new_brain.neurons = [Neuron(neuron.id, neuron.value, neuron.activation_function) for neuron in self.neurons] 
+        for neuron in new_brain.neurons:
+            self_index = self.neurons.index(neuron)
+            for gene in neuron.outgoing_genes:
+                other_index = self.neurons.index(gene.to_node)
+                new_gene = Gene(from_node=new_brain.neurons[self_index], to_node=new_brain.neurons[other_index], weight=gene.weight, bias=gene.bias)
+                new_brain.neurons[self_index].outgoing_genes.append(new_gene)
+                new_brain.genes.append(new_gene)
+        new_brain.score = self.score if keep_score else 0.0
+        return new_brain
+    
+    
+    
     def reset_neurons(self):
         for neuron in self.neurons:
             neuron.value = 0.0
@@ -199,41 +220,4 @@ class Brain:
             return pickle.load(brain_file)
         
 
-
-
-
-
-class Generation:
-    
-    def __init__(self, brains_count=1, input_nodes = 4, outut_nodes = 1):
-        self.brains:List[Brain] = []
-        for i in range(brains_count):
-            brain = Brain(id=i, input_nodes=input_nodes, output_nodes=outut_nodes, hidden_layers=[2])
-            self.brains.append(brain)
-        
-        
-    def evaluate_agents(self, fitnessfunction):
-        
-        pass
-    
-    
-    
-    def create_next_generation(self):
-        # Sort agents based on performance and generate selection probabiltiy
-        
-        #Take top 20% as is
-        
-        #Sample the remaining 80% of the new generation from the current generation.
-        
-        #Peform crossover and mutation on the 80% to create new agents.
-
-
-        #Return generation
-
-        pass
-    
-    def save_generation(self, filename):
-        generation_file = open(filename, 'ab')
-        pickle.dump(self, generation_file)
-    
 
