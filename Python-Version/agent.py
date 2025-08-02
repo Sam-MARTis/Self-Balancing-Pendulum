@@ -175,39 +175,39 @@ class Brain:
         
     #     pass
     def mutate(self, mutation_strength_weight=1.9, mutation_strength_bias=1.5, 
-            gene_mutation_rate=0.2, gene_addition_rate=0.2, neuron_addition_rate=0.1):
+            gene_mutation_rate=0.2, gene_addition_rate=0.2, neuron_addition_rate=0.1, number_of_mutations=3):
         
         total_rate = gene_mutation_rate + gene_addition_rate + neuron_addition_rate
         if total_rate > 1.0:
             raise ValueError("Mutation rates exceed 1.0")
-
-        rand_val = Helpers.rand(0, 1)
-        
-        if rand_val < gene_mutation_rate:
-            if len(self.genes) > 0: 
-                self.modify_gene(Helpers.randint(0, len(self.genes)-1), 
-                            mutation_strength_weight, mutation_strength_bias)
-        elif rand_val < gene_mutation_rate + gene_addition_rate:
-            if len(self.neurons) >= 2:  # Need at least 2 neurons
-                from_node_index = Helpers.randint(0, len(self.neurons)-2)
-                to_node_index = Helpers.randint(from_node_index + 1, len(self.neurons)-1)
-                
-                from_node = self.neurons[from_node_index]
-                to_node = self.neurons[to_node_index]
-                
-                new_gene = Gene(from_node=from_node, to_node=to_node, 
-                            weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
-                from_node.outgoing_genes.append(new_gene)
-                self.genes.append(new_gene)
-        elif rand_val < total_rate:
-            new_neuron = Neuron(id=len(self.neurons), value=0.0, activation_function=activation_function)
-            # Insert between input and output layers
-            if len(self.neurons) > self.input_nodes_count + self.output_nodes_count:
-                neuron_index = Helpers.randint(self.input_nodes_count, 
-                                            len(self.neurons) - self.output_nodes_count)
-                self.insert_neuron(new_neuron, neuron_index, insert_genes=True)
-        else:
-            pass # No mutation
+        for _ in range(number_of_mutations):
+            rand_val = Helpers.rand(0, 1)
+            
+            if rand_val < gene_mutation_rate:
+                if len(self.genes) > 0: 
+                    self.modify_gene(Helpers.randint(0, len(self.genes)-1), 
+                                mutation_strength_weight, mutation_strength_bias)
+            elif rand_val < gene_mutation_rate + gene_addition_rate:
+                if len(self.neurons) >= 2:  # Need at least 2 neurons
+                    from_node_index = Helpers.randint(0, len(self.neurons)-2)
+                    to_node_index = Helpers.randint(from_node_index + 1, len(self.neurons)-1)
+                    
+                    from_node = self.neurons[from_node_index]
+                    to_node = self.neurons[to_node_index]
+                    
+                    new_gene = Gene(from_node=from_node, to_node=to_node, 
+                                weight=Helpers.rand(-1.0, 1.0), bias=Helpers.rand(-1.0, 1.0))
+                    from_node.outgoing_genes.append(new_gene)
+                    self.genes.append(new_gene)
+            elif rand_val < total_rate:
+                new_neuron = Neuron(id=len(self.neurons), value=0.0, activation_function=activation_function)
+                # Insert between input and output layers
+                if len(self.neurons) > self.input_nodes_count + self.output_nodes_count:
+                    neuron_index = Helpers.randint(self.input_nodes_count, 
+                                                len(self.neurons) - self.output_nodes_count)
+                    self.insert_neuron(new_neuron, neuron_index, insert_genes=True)
+            else:
+                pass # No mutation
 
     def save_brain(self, filename):
         with open(filename, 'wb') as brain_file:  

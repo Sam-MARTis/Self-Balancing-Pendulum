@@ -57,6 +57,18 @@ class Helpers:
         sq_scores = [score ** 2 for score in scores]
         total = sum(sq_scores)+Helpers.epsilon
         return [score / total for score in sq_scores] 
+    @staticmethod
+    def sample(probabilities):
+        random_value = random.random()
+        cumulative_probability = 0.0
+        for i, probability in enumerate(probabilities):
+            cumulative_probability += probability
+            if random_value <= cumulative_probability:
+                return i
+        else:
+
+            print("Warning: sample function did not return a valid index. This may be due to rounding errors in probabilities.")
+        return len(probabilities) - 1  
 
 class Action:
     def __init__(self, force):
