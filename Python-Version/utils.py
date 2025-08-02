@@ -19,6 +19,9 @@ class vec2:
         return vec2(self.x / scalar, self.y / scalar)
     
 class Helpers:
+    
+    epsilon = 1e-8  # Small value to avoid division by zero in softmax and square_normalize
+    
     @staticmethod
     def radians(degrees):
         return degrees * (math.pi / 180.0)
@@ -44,6 +47,16 @@ class Helpers:
         Returns a random float between min_value and max_value.
         """
         return min_value + (max_value - min_value) * random.random()
+    @staticmethod
+    def softmax(scores):
+        exp_scores = [math.exp(score) for score in scores]
+        total = sum(exp_scores)
+        return [score / total for score in exp_scores]
+    @staticmethod
+    def square_normalize(scores):
+        sq_scores = [score ** 2 for score in scores]
+        total = sum(sq_scores)+Helpers.epsilon
+        return [score / total for score in sq_scores] 
 
 class Action:
     def __init__(self, force):
